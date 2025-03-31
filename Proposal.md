@@ -38,6 +38,7 @@ As an AAU, I should be able to choose if I want to pick-up the food or have it d
 - In addition to the AAU view, there could be a user profile for the restaurant owner to edit the restaurant page: adding, editing, or deleting menu items.
 
 ## ERD
+
 ![image](./assets/mezclaERD.png)
 
 ## RESTful Routes
@@ -45,20 +46,27 @@ As an AAU, I should be able to choose if I want to pick-up the food or have it d
 
 | Resource           | HTTP Method | Route Path                | Purpose                             |
 |--------------------|-------------|---------------------------|--------------------------------------|
-| **Customers**      | `GET`       | `/customers`              | View all customers (admin)           |
-|                    | `GET`       | `/customers/:id`          | View one customer                    |
-|                    | `POST`      | `/customers`              | Register a new customer              |
-|                    | `PUT`       | `/customers/:id`          | Update a customer profile            |
-|                    | `DELETE`    | `/customers/:id`          | Delete a customer                    |
-| **Menu Items**     | `GET`       | `/menu_items`             | View all menu items                  |
-|                    | `GET`       | `/menu_items/:id`         | View one menu item                   |
-|                    | `POST`      | `/menu_items`             | Add a new menu item (admin)          |
-|                    | `PUT`       | `/menu_items/:id`         | Edit a menu item (admin)             |
-|                    | `DELETE`    | `/menu_items/:id`         | Delete a menu item                   |
+| **Menu Items**     | `GET`       | `/menu-items`             | View all menu items                  |
+|                    | `GET`       | `/menu-items/:id`         | View one menu item                   |
+|                    | `POST`      | `/menu-items`             | Add a new menu item (admin)          |
+|                    | `PUT`       | `/menu-items/:id`         | Edit a menu item (admin)             |
+|                    | `DELETE`    | `/menu-items/:id`         | Delete a menu item                   |
 | **Orders**         | `GET`       | `/orders`                 | View all orders (admin/staff)        |
 |                    | `GET`       | `/orders/:id`             | View specific order                  |
 |                    | `POST`      | `/orders`                 | Place a new order                    |
 |                    | `PUT`       | `/orders/:id`             | Update order status                  |
 |                    | `DELETE`    | `/orders/:id`             | Cancel an order                      |
 
+#### Timeline - Daily Accountability
 
+| Day        |   | Task                               | Blockers | Notes/ Thoughts |
+|------------|---|------------------------------------|----------|-----------------|
+| Monday     |   | Create and present proposal        |          |                 |
+| Tuesday    |   | Set up project, basic structure, and EJS template files                 |          |                 |
+| Wednesday  |   | CRUD Operations/Second Model                     |          |                 |
+| Thursday   |   | Middleware/Clean up code                    |          |                 |
+| Friday     |   | UI/UX                        |          |                 |
+| Saturday   |   | Finalize MVP                       |          |                 |
+| Sunday     |   | Work on stretch goals              |          |                 |
+| Monday     |   | Presentation Day!                  |          |                 |
+|            |   |                                    |          |                 |
