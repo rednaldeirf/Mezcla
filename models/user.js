@@ -13,14 +13,4 @@ const userSchema = mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-const menuItemSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: String,
-    price: { type: Number, required: true },
-    category: String,
-    //is_vegetarian: Boolean
-});
-
-const menuItem = mongoose.model("menuItem", menuItemSchema);
-
 export default User;

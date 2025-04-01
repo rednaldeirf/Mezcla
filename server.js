@@ -4,12 +4,21 @@ import methodOverride from "method-override";
 import morgan from "morgan";
 import session from "express-session";
 import express from "express";
+import mongoose from "mongoose";
 import authController from "./controllers/auth.js";
 import "./db/connection.js";
+import menuItemRoutes from './routes/menuItems.js';
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = process.env.PORT ? process.env.PORT : "3000";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(morgan('dev'));
@@ -20,6 +29,9 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(express.json());
+
+app.use('/menu', menuItemRoutes);
 
 app.get("/", (req, res) => {
   res.render("index.ejs", {

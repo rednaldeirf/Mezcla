@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mezcla Menu</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #fff8f0;
+    }
+    .menu-item {
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
+    }
+    h1 {
+      color: #d35400;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mezcla Menu</h1>
+
+  <% if (menuItems.length === 0) { %>
+    <p>No menu items yet!</p>
+  <% } else { %>
+    <% menuItems.forEach(item => { %>
+      <div class="menu-item">
+        <h2><%= item.name %> - $<%= item.price.toFixed(2) %></h2>
+        <p><%= item.description %></p>
+        <p><strong>Category:</strong> <%= item.category %></p>
+        <form action="/menu/<%= item._id %>?_method=DELETE" method="POST" style="display:inline;">
+            <button type="submit">Delete</button>
+          </form>
+          
+          <form action="/menu/<%= item._id %>/edit" method="GET" style="display:inline;">
+            <button type="submit">Edit</button>
+      </div>
+    <% }); %>
+  <% } %>
+ 
+  </form>
+</body>
+</html>
