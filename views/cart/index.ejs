@@ -1,0 +1,95 @@
+<div>
+    <a href="auth/sign-up" class="btn">Sign Up</a>
+    <a href="auth/sign-in" class="btn">Sign In</a>
+  </div>
+<h1>Your Cart</h1>
+<style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fffaf5;
+      color: #333;
+      text-align: center;
+      padding: 4rem;
+    }
+    h1 {
+      font-size: 3rem;
+      color: #d35400;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 1rem;
+      border: none;
+      background-color: #d35400;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background-color: #b84300;
+    }
+  </style>
+
+
+
+<% if (cart.length === 0) { %>
+  <p>Your cart is empty.</p>
+<% } else { %>
+  <ul>
+    <% cart.forEach(item => { %>
+      <li><%= item.name %> — $<%= item.price.toFixed(2) %></li>
+    <% }) %>
+  </ul>
+  <p>Total: $<%= cart.reduce((sum, item) => sum + item.price, 0).toFixed(2) %></p>
+<% } %>
+<hr />
+<h2>Order Type</h2>
+
+<form action="/cart/checkout" method="POST">
+  <label>
+    <input type="radio" name="orderType" value="pickup" checked />
+    Pick-Up
+  </label><br/>
+
+  <label>
+    <input type="radio" name="orderType" value="delivery" />
+    Delivery
+  </label>
+
+  <div id="delivery-section" style="display: none; margin-top: 1rem;">
+    <p><strong>Delivery Address:</strong></p>
+    <% if (user && user.address) { %>
+      <p><%= user.address %></p>
+      <label>
+        <input type="checkbox" name="editAddress" />
+        I want to enter a different address
+      </label><br/>
+    <% } else { %>
+      <label>Enter your delivery address:</label><br/>
+      <input type="text" name="newAddress" required /><br/>
+    <% } %>
+  </div>
+
+  <button type="submit">Proceed to Checkout</button>
+</form>
+
+<script>
+  const deliveryRadio = document.querySelector('input[value="delivery"]');
+  const pickupRadio = document.querySelector('input[value="pickup"]');
+  const deliverySection = document.getElementById('delivery-section');
+
+  deliveryRadio.addEventListener('change', () => {
+    if (deliveryRadio.checked) {
+      deliverySection.style.display = 'block';
+    }
+  });
+
+  pickupRadio.addEventListener('change', () => {
+    if (pickupRadio.checked) {
+      deliverySection.style.display = 'none';
+    }
+  });
+</script>   
+
+<a href="/menu">← Back to Menu</a>

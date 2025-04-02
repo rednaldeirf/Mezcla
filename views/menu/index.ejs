@@ -19,29 +19,58 @@
   </style>
 </head>
 <body>
+    <nav style="display:flex; justify-content:space-between; padding:1rem; background:#eee;">
+        <div>
+          <a href="/">Home</a>
+          <% for (let category in categories) { %>
+            <a href="#<%= category %>"><%= category %></a>
+          <% } %>
+        </div>
+        <div>
+          <a href="/cart">🛒 Cart (<%= cartCount %>)</a>
+        </div>
+      </nav>
     <div>
         <a href="auth/sign-up" class="btn">Sign Up</a>
     <a href="auth/sign-in" class="btn">Sign In</a>
     </div>
   <h1>Mezcla Menu</h1>
 
-  <% if (menuItems.length === 0) { %>
+  <% for (let category in categories) { %>
+    <h2 id="<%= category %>"><%= category %></h2>
+    <ul>
+      <% categories[category].forEach(item => { %>
+        <li>
+          <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
+          <%= item.description %><br/>
+          <form action="/cart/add/<%= item._id %>" method="POST">
+            <button type="submit">Add to Cart</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <% if (Object.keys(categories).length === 0) { %>
     <p>No menu items yet!</p>
   <% } else { %>
-    <% menuItems.forEach(item => { %>
-      <div class="menu-item">
-        <h2><%= item.name %> - $<%= item.price.toFixed(2) %></h2>
-        <p><%= item.description %></p>
-        <p><strong>Category:</strong> <%= item.category %></p>
-        <form action="/menu/<%= item._id %>?_method=DELETE" method="POST" style="display:inline;">
-            <button type="submit">Delete</button>
-          </form>
-          
-          <form action="/menu/<%= item._id %>/edit" method="GET" style="display:inline;">
-            <button type="submit">Edit</button>
-      </div>
-    <% }); %>
+    <% for (let category in categories) { %>
+      <h2 id="<%= category %>"><%= category %></h2>
+      <ul>
+        <% categories[category].forEach(item => { %>
+          <li>
+            <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
+            <%= item.description %><br/>
+            <form action="/cart/add/<%= item._id %>" method="POST">
+              <button type="submit">Add to Cart</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
   <% } %>
+
+
  
   </form>
 </body>

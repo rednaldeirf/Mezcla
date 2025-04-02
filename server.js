@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import indexRoutes from "./routes/index.js";
 import isSignedIn from "./middleware/is-signed-in.js";
 import userRoutes from "./routes/users.js";
+import cartRoutes from './routes/cart.js';
 
 const app = express();
 const port = process.env.PORT ? process.env.PORT : "3000";
@@ -36,6 +37,7 @@ app.use(express.json());
 
 app.use('/', indexRoutes);
 app.use ("/", userRoutes);
+app.use("/cart", cartRoutes);
 app.use('/menu', menuItemRoutes);
 
 app.get("/", (req, res) => {

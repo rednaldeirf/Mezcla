@@ -6,17 +6,18 @@ import {
     updateMenuItem,
     deleteMenuItem
 } from '../controllers/menuItemController.js';
+import MenuItem from "../models/menuItem.js";
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-    try {
-      const items = await getAllMenuItems(); // call function directly, return data
-      res.render('menu/index', { menuItems: items });
-    } catch (err) {
-      res.status(500).send('Server error');
-    }
-  });
+// router.get('/', async (req, res) => {
+//     try {
+//       const items = await getAllMenuItems(); // call function directly, return data
+//       res.render('menu/index', { menuItems: items });
+//     } catch (err) {
+//       res.status(500).send('Server error');
+//     }
+//   });
 
   router.get('/:id/edit', async (req, res) => {
     try {
@@ -40,14 +41,44 @@ router.delete('/:id', async (req, res) => {
   await deleteMenuItem(req, res);
 });
 
+// router.get("/menu", async (req, res) => {
+//     const items = await MenuItem.find();
+  
+//     // Group by category
+//     const categories = {};
+//     for (let item of items) {
+//       if (!categories[item.category]) categories[item.category] = [];
+//       categories[item.category].push(item);
+//     }
+  
+//     res.render("menu/index", {
+//       categories,
+//       cartCount: req.session.cart ? req.session.cart.length : 0
+//     });
+//   });
 
-
-
-
-
-
-
-
+  router.get("/", async (req, res) => {
+    try {
+      const items = await MenuItem.find();
+  
+      // Group items by category
+      const categories = {};
+      for (let item of items) {
+        if (!categories[item.category]) {
+          categories[item.category] = [];
+        }
+        categories[item.category].push(item);
+      }
+  
+      res.render("menu/index", {
+        categories,
+        cartCount: req.session.cart ? req.session.cart.length : 0
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error loading menu");
+    }
+  });
 
 
 
