@@ -3,25 +3,63 @@ import MenuItem from "../models/menuItem.js";
 
 const router = Router();
 
-router.post("/add/:id", async (req, res) => {
-  const item = await MenuItem.findById(req.params.id);
-  if (!item) return res.redirect("/menu");
+// router.post("/add/:id", async (req, res) => {
+//   const item = await MenuItem.findById(req.params.id);
+//   if (!item) return res.redirect("/menu");
 
-  if (!req.session.cart) req.session.cart = [];
+//   if (!req.session.cart) req.session.cart = [];
 
-  req.session.cart.push({
-    id: item._id,
-    name: item.name,
-    price: item.price,
-  });
+//   if (existingItem) {
+//     existingItem.quantity += 1;
+//   } else {
+//     req.session.cart.push({
+//       id: item._id.toString(),
+//       name: item.name,
+//       price: item.price,
+//       quantity: 1,
+//     });
+//   }
 
-  res.redirect("/menu");
-});
+// //   req.session.cart.push({
+// //     id: item._id,
+// //     name: item.name,
+// //     price: item.price,
+// //   });
+
+//   res.redirect("/menu");
+// });
 
 // router.get("/", (req, res) => {
 //   const cart = req.session.cart || [];
 //   res.render("cart/index", { cart });
 // });
+
+router.post("/update", (req, res) => {
+    console.log("📦 Incoming form data:", req.body);
+  
+    const { quantities, ids, remove } = req.body;
+  
+    if (!ids || !quantities) {
+      return res.send("Missing data — are you sure the form submitted correctly?");
+    }
+  
+    const updatedCart = [];
+  
+    ids.forEach((id, index) => {
+      if (!remove || !remove.includes(id)) {
+        const currentItem = req.session.cart.find(i => i.id === id);
+        if (currentItem) {
+          updatedCart.push({
+            ...currentItem,
+            quantity: parseInt(quantities[index])
+          });
+        }
+      }
+    });
+  
+    req.session.cart = updatedCart;
+    res.redirect("/cart");
+  });
 
   
   router.get("/", (req, res) => {
@@ -33,6 +71,38 @@ router.post("/add/:id", async (req, res) => {
       cart,
       user, // ✅ this one never gets hit
     });
+  });
+
+  router.post("/add/:id", async (req, res) => {
+    try {
+      const item = await MenuItem.findById(req.params.id);
+      if (!item) return res.redirect("/menu");
+  
+      if (!req.session.cart) req.session.cart = [];
+  
+      // ✅ Find the item in the cart (if it exists)
+      const existingItemIndex = req.session.cart.findIndex(
+        (i) => i.id === item._id.toString()
+      );
+  
+      if (existingItemIndex > -1) {
+        // ✅ If it exists, increment the quantity
+        req.session.cart[existingItemIndex].quantity += 1;
+      } else {
+        // ✅ Otherwise, add it as a new item
+        req.session.cart.push({
+          id: item._id.toString(),
+          name: item.name,
+          price: item.price,
+          quantity: 1,
+        });
+      }
+  
+      res.redirect("/menu");
+    } catch (error) {
+      console.error("🛑 Error adding item to cart:", error);
+      res.status(500).send("Something went wrong while adding to cart.");
+    }
   });
 
 router.post("/checkout", (req, res) => {

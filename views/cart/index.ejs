@@ -31,19 +31,42 @@
     }
   </style>
 
-
-
 <% if (cart.length === 0) { %>
-  <p>Your cart is empty.</p>
-<% } else { %>
-  <ul>
-    <% cart.forEach(item => { %>
-      <li><%= item.name %> — $<%= item.price.toFixed(2) %></li>
-    <% }) %>
-  </ul>
-  <p>Total: $<%= cart.reduce((sum, item) => sum + item.price, 0).toFixed(2) %></p>
-<% } %>
-<hr />
+    <p>Your cart is empty.</p>
+  <% } else { %>
+    <form action="/cart/update" method="POST">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Remove?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% cart.forEach((item) => { %>
+              <tr>
+                <td><%= item.name %></td>
+                <td>
+                  <input type="number" name="quantities[]" value="<%= item.quantity %>" min="1" required />
+                  <input type="hidden" name="ids[]" value="<%= item.id %>" />
+                </td>
+                <td>
+                  <input type="checkbox" name="remove[]" value="<%= item.id %>" />
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <button type="submit">Update Cart</button>
+      </form>
+  
+    <p>
+      <strong>Total:</strong>
+      $<%= cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2) %>
+    </p>
+  <% } %>
+
 <h2>Order Type</h2>
 
 <form action="/cart/checkout" method="POST">
