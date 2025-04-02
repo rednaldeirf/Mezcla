@@ -5,7 +5,7 @@ import menuItemRoutes from "./menuItems.js";
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.render("index");
+  res.render("welcome",  { user: req.session.user });
 });
 
 router.use("/auth", userRoutes);

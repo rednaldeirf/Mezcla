@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
+import isSignedIn from "../middleware/is-signed-in.js";
 
 const router = express.Router();
 

@@ -10,6 +10,9 @@ import "./db/connection.js";
 import menuItemRoutes from './routes/menuItems.js';
 import path from "path";
 import { fileURLToPath } from "url";
+import indexRoutes from "./routes/index.js";
+import isSignedIn from "./middleware/is-signed-in.js";
+import userRoutes from "./routes/users.js";
 
 const app = express();
 const port = process.env.PORT ? process.env.PORT : "3000";
@@ -31,6 +34,8 @@ app.use(
 );
 app.use(express.json());
 
+app.use('/', indexRoutes);
+app.use ("/", userRoutes);
 app.use('/menu', menuItemRoutes);
 
 app.get("/", (req, res) => {
@@ -39,13 +44,13 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/vip-lounge", (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send("Sorry, no guests allowed.");
-  }
-});
+// app.get("/vip-lounge", (req, res) => {
+//   if (req.session.user) {
+//     res.send(`Welcome to the party ${req.session.user.username}.`);
+//   } else {
+//     res.send("Sorry, no guests allowed.");
+//   }
+// });
 
 app.use("/auth", authController);
 
