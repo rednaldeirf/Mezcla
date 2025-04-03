@@ -58,21 +58,30 @@ router.delete('/:id', async (req, res) => {
 //   });
 
   router.get("/", async (req, res) => {
+    res.set("Cache-Control", "no-store");
     try {
       const items = await MenuItem.find();
-  
-      // Group items by category
       const categories = {};
+
       for (let item of items) {
         if (!categories[item.category]) {
           categories[item.category] = [];
         }
         categories[item.category].push(item);
       }
-  
+
+      const cartCount = req.session.cart
+      ? req.session.cart.reduce((sum, item) => sum + item.quantity, 0)
+      : 0;
+      
+      const welcomeMessage = req.session.welcomeMessage || null;
+      delete req.session.welcomeMessage;
+
       res.render("menu/index", {
         categories,
-        cartCount: req.session.cart ? req.session.cart.length : 0
+        cartCount: req.session.cart ? req.session.cart.length : 0,
+        welcomeMessage,
+        user: req.session.user || null, 
       });
     } catch (err) {
       console.error(err);

@@ -36,7 +36,7 @@ app.use(
 app.use(express.json());
 
 app.use('/', indexRoutes);
-app.use ("/", userRoutes);
+app.use ("/users", userRoutes);
 app.use("/cart", cartRoutes);
 app.use('/menu', menuItemRoutes);
 

@@ -9,69 +9,133 @@
       padding: 2rem;
       background: #fff8f0;
     }
+
+    h1 {
+      color: #d35400;
+    }
+
     .menu-item {
       border-bottom: 1px solid #ccc;
       padding: 1rem 0;
     }
-    h1 {
+
+    .cart-link {
+      font-weight: bold;
+      background: rgb(241, 169, 34);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      float: right;
+      margin-top: 10px;
+    }
+
+    .cart-link:hover {
+      background: #b84300;
+    }
+
+    .flash-message {
       color: #d35400;
+      padding: 12px 24px;
+      margin: 1rem auto;
+      width: fit-content;
+      border-radius: 8px;
+      font-weight: bold;
+      animation: fadeOut 3s ease-in-out 2s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: #d35400;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      margin: 1rem 0.5rem;
+    }
+
+    .btn:hover {
+      background-color: #b84300;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background: #eee;
+    }
+
+    nav a {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
-    <nav style="display:flex; justify-content:space-between; padding:1rem; background:#eee;">
-        <div>
-          <a href="/">Home</a>
-          <% for (let category in categories) { %>
-            <a href="#<%= category %>"><%= category %></a>
-          <% } %>
-        </div>
-        <div>
-          <a href="/cart">🛒 Cart (<%= cartCount %>)</a>
-        </div>
-      </nav>
+    <a id="top"></a>
+  <nav>
     <div>
-        <a href="auth/sign-up" class="btn">Sign Up</a>
-    <a href="auth/sign-in" class="btn">Sign In</a>
+      <a href="/">Home</a>
+      <% for (let category in categories) { %>
+        <a href="#<%= category %>"><%= category %></a>
+      <% } %>
     </div>
-  <h1>Mezcla Menu</h1>
+    <div>
+      <a href="/cart" class="cart-link">🛒 Cart (<%= cartCount %>)</a>
+    </div>
+  </nav>
 
-  <% for (let category in categories) { %>
-    <h2 id="<%= category %>"><%= category %></h2>
-    <ul>
-      <% categories[category].forEach(item => { %>
-        <li>
-          <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
-          <%= item.description %><br/>
-          <form action="/cart/add/<%= item._id %>" method="POST">
-            <button type="submit">Add to Cart</button>
-          </form>
-        </li>
-      <% }) %>
-    </ul>
+  <div>
+    <a href="/users/sign-up" class="btn">Sign Up</a>
+    <a href="/users/sign-in" class="btn">Sign In</a>
+    <a href="/users/sign-out" class="btn">Sign Out</a>
+  </div>
+
+  <% if (welcomeMessage) { %>
+    <div class="flash-message"><%= welcomeMessage %></div>
   <% } %>
+
+  <h1>Mezcla Menu</h1>
 
   <% if (Object.keys(categories).length === 0) { %>
     <p>No menu items yet!</p>
   <% } else { %>
     <% for (let category in categories) { %>
-      <h2 id="<%= category %>"><%= category %></h2>
-      <ul>
-        <% categories[category].forEach(item => { %>
-          <li>
-            <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
-            <%= item.description %><br/>
-            <form action="/cart/add/<%= item._id %>" method="POST">
-              <button type="submit">Add to Cart</button>
-            </form>
-          </li>
-        <% }) %>
-      </ul>
-    <% } %>
+        <div class="category">
+          <h2 class="toggle-category" data-target="<%= category %>"><%= category %> ⯈</h2>
+          <ul id="<%= category %>" class="category-items" style="display: none;">
+            <% categories[category].forEach(item => { %>
+              <li class="menu-item">
+                <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
+                <%= item.description %><br/>
+                <form action="/cart/add/<%= item._id %>" method="POST">
+                  <button type="submit">Add to Cart</button>
+                </form>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
   <% } %>
-
-
- 
-  </form>
 </body>
 </html>
+
+<script>
+    const toggles = document.querySelectorAll(".toggle-category");
+  
+    toggles.forEach(toggle => {
+      toggle.addEventListener("click", () => {
+        const targetId = toggle.getAttribute("data-target");
+        const section = document.getElementById(targetId);
+        const isOpen = section.style.display === "block";
+        section.style.display = isOpen ? "none" : "block";
+        toggle.textContent = `${targetId} ${isOpen ? '⯈' : '⯆'}`;
+      });
+    });
+  </script>

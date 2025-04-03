@@ -80,30 +80,63 @@ router.post("/update", (req, res) => {
   
       if (!req.session.cart) req.session.cart = [];
   
-      // ✅ Find the item in the cart (if it exists)
+      const itemId = item._id.toString();
+  
       const existingItemIndex = req.session.cart.findIndex(
-        (i) => i.id === item._id.toString()
+        (i) => i.id === itemId
       );
   
       if (existingItemIndex > -1) {
-        // ✅ If it exists, increment the quantity
         req.session.cart[existingItemIndex].quantity += 1;
       } else {
-        // ✅ Otherwise, add it as a new item
         req.session.cart.push({
-          id: item._id.toString(),
+          id: itemId,
           name: item.name,
           price: item.price,
           quantity: 1,
         });
       }
   
-      res.redirect("/menu");
+      // ✅ Wait until the session is saved before redirecting
+      req.session.save(() => {
+        res.redirect("/menu");
+      });
     } catch (error) {
       console.error("🛑 Error adding item to cart:", error);
-      res.status(500).send("Something went wrong while adding to cart.");
+      res.status(500).send("Error adding to cart.");
     }
   });
+
+//   router.post("/add/:id", async (req, res) => {
+//     try {
+//       const item = await MenuItem.findById(req.params.id);
+//       if (!item) return res.redirect("/menu");
+  
+//       if (!req.session.cart) req.session.cart = [];
+  
+//       const itemId = item._id.toString();
+  
+//       const existingItemIndex = req.session.cart.findIndex(
+//         (i) => i.id === itemId
+//       );
+  
+//       if (existingItemIndex > -1) {
+//         req.session.cart[existingItemIndex].quantity += 1;
+//       } else {
+//         req.session.cart.push({
+//           id: itemId,
+//           name: item.name,
+//           price: item.price,
+//           quantity: 1,
+//         });
+//       }
+  
+//       res.redirect("/menu");
+//     } catch (error) {
+//       console.error("🛑 Error adding item to cart:", error);
+//       res.status(500).send("Error adding to cart.");
+//     }
+//   });
 
 router.post("/checkout", (req, res) => {
     const { orderType, editAddress, newAddress } = req.body;

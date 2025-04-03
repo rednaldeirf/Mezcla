@@ -46,7 +46,7 @@ router.get("/sign-up", (req, res) => {
       res.redirect("/users/sign-in");
     } catch (error) {
       console.log(error);
-      res.redirect("/");
+      res.redirect("/users/profile");
     }
   });
   
@@ -62,13 +62,16 @@ router.get("/sign-up", (req, res) => {
       if (!validPassword) {
         return res.send("Login failed.");
       }
-  
+
       req.session.user = {
         username: user.username,
         _id: user._id,
+        address: user.address,
+        email: user.email,
       };
   
-      res.redirect("/");
+      req.session.welcomeMessage = `Welcome back, ${user.username}!`;
+      res.redirect("/menu");
     } catch (error) {
       console.log(error);
       res.redirect("/");
@@ -82,8 +85,17 @@ router.get("/sign-up", (req, res) => {
   });
   
   // Profile page
-  router.get("/profile", isSignedIn, (req, res) => {
-    res.render("users/profile", { user: req.session.user });
+//   router.get("/profile", isSignedIn, (req, res) => {
+//     res.render("users/profile", { user: req.session.user });
+//   });
+router.get("/profile", (req, res) => {
+    const user = req.session.user;
+    if (!user) return res.redirect("/auth/sign-in");
+  
+    res.render("users/profile", { user });
   });
 
+
 export default router;
+        
+            
