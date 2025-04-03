@@ -107,35 +107,54 @@
     <p>No menu items yet!</p>
   <% } else { %>
     <% for (let category in categories) { %>
-        <div class="category">
-          <h2 class="toggle-category" data-target="<%= category %>"><%= category %> ⯈</h2>
-          <ul id="<%= category %>" class="category-items" style="display: none;">
-            <% categories[category].forEach(item => { %>
-              <li class="menu-item">
-                <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
-                <%= item.description %><br/>
-                <form action="/cart/add/<%= item._id %>" method="POST">
-                  <button type="submit">Add to Cart</button>
-                </form>
-              </li>
-            <% }) %>
-          </ul>
-        </div>
+        <h2 id="<%= category %>"><%= category %></h2>
+        <ul>
+          <% categories[category].forEach(item => { %>
+            <li class="menu-item">
+              <strong><%= item.name %></strong> — $<%= item.price.toFixed(2) %><br/>
+              <%= item.description %><br/>
+              <form action="/cart/add/<%= item._id %>" method="POST">
+                <button type="submit" data-id="<%= item._id %>" class="add-to-cart">Add to Cart</button>
+              </form>
+            </li>
+          <% }) %>
+        </ul>
+        <a href="#top" style="display:block; margin:1rem 0;">↑ Back to Top</a>
       <% } %>
   <% } %>
-</body>
-</html>
-
-<script>
-    const toggles = document.querySelectorAll(".toggle-category");
+  <script>
+    const cartLink = document.querySelector(".cart-link");
+    const buttons = document.querySelectorAll(".add-to-cart");
   
-    toggles.forEach(toggle => {
-      toggle.addEventListener("click", () => {
-        const targetId = toggle.getAttribute("data-target");
-        const section = document.getElementById(targetId);
-        const isOpen = section.style.display === "block";
-        section.style.display = isOpen ? "none" : "block";
-        toggle.textContent = `${targetId} ${isOpen ? '⯈' : '⯆'}`;
+    buttons.forEach(button => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault(); // stop form from submitting
+  
+        const itemId = button.dataset.id;
+  
+        try {
+          const res = await fetch(`/cart/ajax/add/${itemId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+  
+          const data = await res.json();
+  
+          if (data.success) {
+            // 💥 Update cart count live!
+            cartLink.innerHTML = `🛒 Cart (${data.cartCount})`;
+          } else {
+            alert("There was a problem adding this item.");
+          }
+  
+        } catch (err) {
+          console.error("Error adding item to cart:", err);
+        }
       });
     });
   </script>
+</body>
+</html>
+

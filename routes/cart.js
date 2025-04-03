@@ -35,27 +35,50 @@ const router = Router();
 // });
 
 router.post("/update", (req, res) => {
-    console.log("📦 Incoming form data:", req.body);
+    const { ids = [], quantities = [], remove = [] } = req.body;
+
+    if (!req.session.cart) return res.redirect("/cart");
   
-    const { quantities, ids, remove } = req.body;
-  
-    if (!ids || !quantities) {
-      return res.send("Missing data — are you sure the form submitted correctly?");
-    }
+    // Normalize all incoming fields
+    const normalizedIds = Array.isArray(ids) ? ids : [ids];
+    const normalizedQuantities = Array.isArray(quantities) ? quantities : [quantities];
+    const removeList = Array.isArray(remove) ? remove : remove ? [remove] : [];
   
     const updatedCart = [];
   
-    ids.forEach((id, index) => {
-      if (!remove || !remove.includes(id)) {
-        const currentItem = req.session.cart.find(i => i.id === id);
-        if (currentItem) {
+    normalizedIds.forEach((id, i) => {
+      if (removeList.includes(id)) return; // ✅ Skip if marked for removal
+  
+      const quantity = parseInt(normalizedQuantities[i]);
+      if (quantity > 0) {
+        const item = req.session.cart.find(it => it.id === id);
+        if (item) {
           updatedCart.push({
-            ...currentItem,
-            quantity: parseInt(quantities[index])
+            ...item,
+            quantity
           });
         }
       }
     });
+
+//   for (let i = 0; i < ids.length; i++) {
+//     const id = ids[i];
+//     const quantity = parseInt(quantities[i]);
+
+//     // Skip if it's in the remove list
+//     if (remove && remove.includes(id)) continue;
+
+//     // Only keep valid quantity items
+//     if (quantity > 0) {
+//       const item = req.session.cart.find(it => it.id === id);
+//       if (item) {
+//         updatedCart.push({
+//           ...item,
+//           quantity
+//         });
+//       }
+//     }
+//   }
   
     req.session.cart = updatedCart;
     res.redirect("/cart");
@@ -65,7 +88,29 @@ router.post("/update", (req, res) => {
   router.get("/", (req, res) => {
     const cart = req.session.cart || [];
     const user = req.session.user || null;
-  
+
+    router.post("/add/:id", async (req, res) => {
+        const item = await MenuItem.findById(req.params.id);
+        if (!item) return res.redirect("/menu");
+      
+        if (!req.session.cart) req.session.cart = [];
+      
+        // ✅ Check if item is already in cart
+        const existingItem = req.session.cart.find(i => i.id === item._id.toString());
+      
+        if (existingItem) {
+          existingItem.quantity += 1; // ✅ Increase quantity
+        } else {
+          req.session.cart.push({
+            id: item._id.toString(),
+            name: item.name,
+            price: item.price,
+            quantity: 1
+          });
+        }
+      
+        res.redirect("/menu");
+      });
     console.log("🧠 user in session:", req.session.user);
     res.render("cart/index", {
       cart,
@@ -105,6 +150,32 @@ router.post("/update", (req, res) => {
       console.error("🛑 Error adding item to cart:", error);
       res.status(500).send("Error adding to cart.");
     }
+  });
+
+  router.post("/ajax/add/:id", async (req, res) => {
+    const item = await MenuItem.findById(req.params.id);
+    if (!item) return res.status(404).json({ success: false, message: "Item not found" });
+  
+    if (!req.session.cart) req.session.cart = [];
+  
+    const existingItem = req.session.cart.find(i => i.id === item._id.toString());
+  
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      req.session.cart.push({
+        id: item._id.toString(),
+        name: item.name,
+        price: item.price,
+        quantity: 1
+      });
+    }
+  
+    // Calculate updated cart count
+    const cartCount = req.session.cart.reduce((sum, i) => sum + i.quantity, 0);
+  
+    // Return a JSON response to the frontend
+    res.json({ success: true, cartCount });
   });
 
 //   router.post("/add/:id", async (req, res) => {

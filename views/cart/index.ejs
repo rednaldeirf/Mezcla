@@ -44,12 +44,12 @@
             </tr>
           </thead>
           <tbody>
-            <% cart.forEach((item) => { %>
+            <% cart.forEach((item, index) => { %>
               <tr>
                 <td><%= item.name %></td>
                 <td>
+                  <input type="hidden" name="ids[]" value="<%= item.id %>">
                   <input type="number" name="quantities[]" value="<%= item.quantity %>" min="1" required />
-                  <input type="hidden" name="ids[]" value="<%= item.id %>" />
                 </td>
                 <td>
                   <input type="checkbox" name="remove[]" value="<%= item.id %>" />
