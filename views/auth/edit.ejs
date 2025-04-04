@@ -30,9 +30,9 @@
 
 <h1>Edit Your Profile</h1>
 
-<form action="/users/edit" method="POST">
+<form action="/users/edit?_method=PUT" method="POST">
   <label>Username:</label>
-  <input type="text" name="username" value="<%= user.username %>" readonly><br>
+  <input type="text" name="username" value="<%= user.username %>"><br>
 
   <label>Email:</label>
   <input type="email" name="email" value="<%= user.email %>" required><br>

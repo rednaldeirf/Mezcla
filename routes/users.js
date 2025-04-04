@@ -108,7 +108,7 @@ router.get("/profile", (req, res) => {
     // ...
   });
   
-  router.post("/edit", async (req, res) => {
+  router.put("/edit", async (req, res) => {
     if (!req.session.user) {
       return res.redirect("/users/sign-in");
     }
