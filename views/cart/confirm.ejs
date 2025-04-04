@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fffaf5;
+      padding: 2rem;
+      color: #333;
+    }
+    h1 {
+      color: #d35400;
+    }
+    .summary {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Thank you for your order<% if (user) { %>, <%= user.username %><% } %>!</h1>
+
+  <p>Your order was placed for <strong><%= orderType %></strong>.</p>
+
+  <% if (orderType === "delivery" && deliveryAddress) { %>
+    <p>Your order will be delivered to:</p>
+    <p><%= deliveryAddress %></p>
+  <% } %>
+
+  <div class="summary">
+    <h2>Order Summary:</h2>
+    <ul>
+      <% cart.forEach(item => { %>
+        <li><strong><%= item.name %></strong> — Qty: <%= item.quantity %> — $<%= (item.price * item.quantity).toFixed(2) %></li>
+      <% }) %>
+    </ul>
+    <p><strong>Total:</strong> $<%= cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2) %></p>
+  </div>
+
+  <a href="/menu">← Back to Menu</a>
+</body>
+<div> 
+<img src="/assets/confirmMezcla.png" alt="Mezcla Logo" style="max-width: 300px; margin-bottom: 2rem;" />
+</div>
+</html>

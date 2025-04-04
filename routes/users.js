@@ -110,9 +110,9 @@ router.get("/profile", (req, res) => {
   
   router.post("/edit", async (req, res) => {
     if (!req.session.user) {
-        return res.redirect("/users/sign-in");
-      }
-    
+      return res.redirect("/users/sign-in");
+    }
+  
     const userId = req.session.user._id;
   
     try {
@@ -121,25 +121,68 @@ router.get("/profile", (req, res) => {
         {
           email: req.body.email,
           address: req.body.address,
-          phone: req.body.phone
+          phone: req.body.phone,
         },
         { new: true }
       );
   
-      // Update session user info
       req.session.user = {
         ...req.session.user,
         email: updatedUser.email,
         address: updatedUser.address,
-        phone: updatedUser.phone
+        phone: updatedUser.phone,
       };
   
-      res.redirect("/profile");
+      console.log("✅ User updated:", updatedUser);
+  
+      // ✅ Ensure session is saved before redirecting
+      req.session.save(() => {
+        res.redirect("/users/profile");
+      });
     } catch (error) {
-      console.log("Error updating user:", error);
-      res.redirect("/auth/edit");
+      console.error("❌ Error updating user:", error);
+      res.status(500).send("Update failed.");
     }
   });
+//   router.post("/edit", async (req, res) => {
+//     if (!req.session.user) {
+//         console.log("⛔️ No user session");
+//         return res.redirect("/auth/sign-in");
+//       }
+
+//       console.log("🧾 Form submission received:", req.body);
+    
+//     const userId = req.session.user._id;
+  
+//     try {
+//       const updatedUser = await User.findByIdAndUpdate(
+//         userId,
+//         {
+//           email: req.body.email,
+//           address: req.body.address,
+//           phone: req.body.phone
+//         },
+//         { new: true }
+//       );
+
+//       console.log("✅ User updated:", updatedUser);
+  
+//       // Update session user info
+//       req.session.user = {
+//         ...req.session.user,
+//         email: updatedUser.email,
+//         address: updatedUser.address,
+//         phone: updatedUser.phone
+//       };
+
+//       console.log("✅ User updated:", updatedUser);
+  
+//       res.redirect("/profile");
+//     } catch (error) {
+//       console.log("Error updating user:", error);
+//       res.redirect("/auth/edit");
+//     }
+//   });
 
 export default router;
         
