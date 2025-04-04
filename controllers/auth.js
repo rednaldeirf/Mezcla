@@ -1,16 +1,15 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
-import isSignedIn from "../middleware/is-signed-in.js";
 
 const router = express.Router();
 
 router.get("/sign-up", (req, res) => {
-  res.render("auth/sign-up.ejs");
+  res.render("auth/sign-up");
 });
 
 router.get("/sign-in", (req, res) => {
-  res.render("auth/sign-in.ejs");
+  res.render("auth/sign-in");
 });
 
 router.get("/sign-out", (req, res) => {
@@ -35,7 +34,7 @@ router.post("/sign-up", async (req, res) => {
     // Must hash the password before sending to the database
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     req.body.password = hashedPassword;
-
+    console.log(req.body)
     // All ready to create the new user!
     await User.create(req.body);
 

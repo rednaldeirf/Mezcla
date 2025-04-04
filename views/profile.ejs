@@ -1,7 +1,38 @@
+<meta charset="UTF-8">
+  <title>Sign Up</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fffaf5;
+      color: #333;
+      text-align: center;
+      padding: 4rem;
+    }
+    h1 {
+      font-size: 3rem;
+      color: #d35400;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 1rem;
+      border: none;
+      background-color: #d35400;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background-color: #b84300;
+    }
+  </style>
+
 <h1>Welcome, <%= user.username %>!</h1>
 
 <p>Email: <%= user.email %></p>
 <p>Address: <%= user.address || "Not provided" %></p>
 
 <a href="/menu" class="btn">Go to Menu</a>
+<a href="/auth/edit">Edit My Info</a>
 <a href="/auth/sign-out" class="btn">Sign Out</a>

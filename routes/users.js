@@ -43,10 +43,10 @@ router.get("/sign-up", (req, res) => {
       req.body.password = hashedPassword;
   
       await User.create(req.body);
-      res.redirect("/users/sign-in");
+      res.redirect("/auth/sign-in");
     } catch (error) {
       console.log(error);
-      res.redirect("/users/profile");
+      res.redirect("/menu/profile");
     }
   });
   
@@ -92,9 +92,54 @@ router.get("/profile", (req, res) => {
     const user = req.session.user;
     if (!user) return res.redirect("/auth/sign-in");
   
-    res.render("users/profile", { user });
+    res.render("profile", { user });
   });
 
+  //edit user
+  router.get("/edit", (req, res) => {
+    const user = req.session.user;
+    if (!user) return res.redirect("/auth/sign-in");
+  
+    res.render("auth/edit", { user });
+  });
+
+  router.post("/edit", isSignedIn, async (req, res) => {
+    const userId = req.session.user._id;
+    // ...
+  });
+  
+  router.post("/edit", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/users/sign-in");
+      }
+    
+    const userId = req.session.user._id;
+  
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          email: req.body.email,
+          address: req.body.address,
+          phone: req.body.phone
+        },
+        { new: true }
+      );
+  
+      // Update session user info
+      req.session.user = {
+        ...req.session.user,
+        email: updatedUser.email,
+        address: updatedUser.address,
+        phone: updatedUser.phone
+      };
+  
+      res.redirect("/profile");
+    } catch (error) {
+      console.log("Error updating user:", error);
+      res.redirect("/auth/edit");
+    }
+  });
 
 export default router;
         
