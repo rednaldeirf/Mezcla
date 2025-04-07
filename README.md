@@ -10,7 +10,7 @@
 ![image](./assets/mezclaScreenshot.png)
 
 ## Getting started: 
-1. [Deployed Link](https://rednaldeirf.github.io/Project-1/)
+1. [Deployed Link](mezcla-production.up.railway.app)
 2. [Planning Materials](https://github.com/rednaldeirf/Mezcla/blob/main/Proposal.md)
 
 
