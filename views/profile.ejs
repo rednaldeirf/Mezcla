@@ -32,7 +32,17 @@
 
 <p>Email: <%= user.email %></p>
 <p>Address: <%= user.address || "Not provided" %></p>
+<p>Phone: <%= user.phone || "Not provided" %></p>
 
 <a href="/menu" class="btn">Go to Menu</a>
 <a href="/auth/edit">Edit My Info</a>
 <a href="/auth/sign-out" class="btn">Sign Out</a>
+
+
+
+
+
+<!-- Delete Button -->
+<form action="/auth/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+    <button type="submit">Delete Account</button>
+</form>

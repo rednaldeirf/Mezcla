@@ -42,6 +42,7 @@ app.use(isSignedIn);
 app.use("/users", userRoutes);
 app.use("/cart", cartRoutes);
 app.use("/menu", menuItemRoutes);
+app.use(express.urlencoded({ extended: true })); 
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
+import isSignedIn from '../middleware/is-signed-in.js';
 
 const router = express.Router();
 
@@ -77,4 +78,30 @@ router.post("/sign-in", async (req, res) => {
   }
 });
 
+
+
+router.delete('/delete', isSignedIn, async (req, res) => {
+  const userId = req.session.user._id;
+
+  try {
+      await User.findByIdAndDelete(userId); // Delete user
+      req.session.destroy(); // Destroy session
+      res.redirect('/'); // Redirect after deletion
+  } catch (error) {
+      console.error("❌ Error deleting user:", error);
+      res.status(500).send("Delete failed.");
+  }
+});
+router.post('/delete', isSignedIn, async (req, res) => {
+  const userId = req.session.user._id; // Get user ID from session
+
+  try {
+      await User.findByIdAndDelete(userId); // Delete user from database
+      req.session.destroy(); // Destroy session
+      res.redirect('/'); // Redirect to homepage after deletion
+  } catch (error) {
+      console.error("❌ Error deleting user:", error);
+      res.status(500).send("Delete failed.");
+  }
+});
 export default router;

@@ -44,7 +44,20 @@
   <input type="text" name="phone" value="<%= user.phone %>"><br>
 
   <button type="submit">Save Changes</button>
-</form>
+
+<!-- <form action="/auth/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete your account?');">
+  <button type="submit">Delete Account</button>
+</form> -->
+<button id="delete-button">Delete Account</button>
+
+<!-- Confirmation Modal -->
+<div id="delete-confirmation-modal" style="display: none;">
+    <div class="modal-content">
+        <h2>Are you sure you want to delete your account?</h2>
+        <button id="confirm-delete">Yes, Delete</button>
+        <button id="cancel-delete">Cancel</button>
+    </div>
+</div>
 
 <a href="/users/profile">← Back to Profile</a>
 <a href="/menu" class="btn">View Menu</a>

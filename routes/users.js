@@ -144,6 +144,8 @@ router.get("/profile", (req, res) => {
       res.status(500).send("Update failed.");
     }
   });
+
+  
 //   router.post("/edit", async (req, res) => {
 //     if (!req.session.user) {
 //         console.log("⛔️ No user session");
