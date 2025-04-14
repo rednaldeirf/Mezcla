@@ -119,6 +119,7 @@ router.get("/profile", (req, res) => {
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
+          username: req.body.username,
           email: req.body.email,
           address: req.body.address,
           phone: req.body.phone,

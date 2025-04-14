@@ -1,3 +1,4 @@
+<pre><%= JSON.stringify(cart, null, 2) %></pre>
 <div>
     <a href="auth/sign-up" class="btn">Sign Up</a>
     <a href="auth/sign-in" class="btn">Sign In</a>
@@ -30,10 +31,20 @@
       background-color: #b84300;
     }
   </style>
-
-<% if (cart.length === 0) { %>
-    <p>Your cart is empty.</p>
+  
+  <% if (cart && cart.length > 0) { %>
+    <ul>
+      <% cart.forEach(item => { %>
+        <li>
+          <strong><%= item.menuItem.name %></strong> — Quantity: <%= item.quantity %>
+        </li>
+      <% }) %>
+    </ul>
   <% } else { %>
+    <p>Your cart is empty.</p>
+  <% } %>
+
+
     <form action="/cart/update" method="POST">
         <table>
           <thead>
@@ -46,7 +57,7 @@
           <tbody>
             <% cart.forEach((item, index) => { %>
               <tr>
-                <td><%= item.name %></td>
+                <td><%= item.menuItem.name %></td>
                 <td>
                   <input type="hidden" name="ids[]" value="<%= item.id %>">
                   <input type="number" name="quantities[]" value="<%= item.quantity %>" min="1" required />
@@ -63,9 +74,9 @@
   
     <p>
       <strong>Total:</strong>
-      $<%= cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2) %>
+      $<%= cart.reduce((sum, item) => sum + item.menuItem.price * item.quantity, 0).toFixed(2) %>
     </p>
-  <% } %>
+  
 
 <h2>Order Type</h2>
 
